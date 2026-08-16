@@ -1,0 +1,2496 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fast Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="icon" id="favicon-link" href="">
+    <link rel="shortcut icon" id="shortcut-favicon-link" href="">
+    <script src="translations.js"></script>
+    <script src="config.js"></script>
+
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #0b1329;
+            color: #f8fafc;
+        }
+
+        /* Grid Background Pattern */
+        .bg-grid {
+            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        .glass {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .cyber-border {
+            border: 1px solid rgba(59, 130, 246, 0.15);
+            transition: all 0.5s ease;
+        }
+
+        .cyber-border:hover {
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.15);
+        }
+
+        .gradient-glow {
+            background: radial-gradient(circle at center, rgba(37, 99, 235, 0.15) 0%, transparent 70%);
+        }
+
+        .badge {
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .login-btn {
+            background-color: #1d4ed8;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .login-btn:hover {
+            background-color: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0b1329;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3b82f6;
+        }
+
+        /* License Table Styles */
+        .license-header-row {
+            background: rgba(15, 23, 42, 0.9);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.08);
+            border-top-left-radius: 1rem;
+            border-top-right-radius: 1rem;
+        }
+
+        .license-data-row {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            transition: background 0.3s ease;
+        }
+
+        .license-data-row:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        /* Tooltip Styles */
+        .custom-tooltip {
+            position: absolute;
+            bottom: 120%;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background: #2563eb;
+            color: #ffffff;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 900;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+            z-index: 1000;
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+        }
+
+        .custom-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 5px;
+            border-style: solid;
+            border-color: #2563eb transparent transparent transparent;
+        }
+
+        .has-tooltip:hover .custom-tooltip {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Light Mode Overrides */
+        html.light body {
+            background-color: #f0f4f8;
+            color: #0f172a;
+        }
+
+        html.light .bg-grid {
+            background-image: linear-gradient(rgba(15, 23, 42, 0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(15, 23, 42, 0.06) 1px, transparent 1px);
+        }
+
+        html.light .glass {
+            background: rgba(255, 255, 255, 0.85);
+            border-color: rgba(15, 23, 42, 0.08);
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+        }
+
+        html.light .cyber-border {
+            border-color: rgba(37, 99, 235, 0.15);
+        }
+
+        html.light .cyber-border:hover {
+            border-color: #2563eb;
+        }
+
+        html.light text-white,
+        html.light .text-white {
+            color: #0f172a !important;
+        }
+
+        html.light .text-slate-400,
+        html.light .text-slate-500 {
+            color: #475569 !important;
+        }
+
+        html.light .badge {
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        html.light .license-header-row {
+            background: rgba(226, 232, 240, 0.9);
+        }
+
+        html.light .license-data-row:hover {
+            background: rgba(0, 0, 0, 0.03);
+        }
+
+        html.light #nav-tabs {
+            background: rgba(15, 23, 42, 0.05);
+        }
+
+        html.light .hover\:text-white:hover {
+            color: #0f172a !important;
+        }
+
+        html.light .hover\:bg-white\/5:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        html.light .text-always-white,
+        .text-always-white {
+            color: #fff !important;
+        }
+
+        html.light #controls-container,
+        html.light .bg-white\/5 {
+            background: rgba(0, 0, 0, 0.05) !important;
+            border-color: rgba(0, 0, 0, 0.1) !important;
+        }
+
+        html.light .nav-logo-box {
+            background-color: transparent !important;
+        }
+
+        /* Dashboard Page Styles */
+        .dash-bot-card {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 1.5rem;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dash-bot-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.35s ease;
+        }
+
+        .dash-bot-card:hover {
+            border-color: rgba(59, 130, 246, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.15);
+        }
+
+        .dash-bot-card:hover::before {
+            opacity: 1;
+        }
+
+        .dash-cp-tab {
+            padding: 0.6rem 1.2rem;
+            border-radius: 0.75rem;
+            font-weight: 900;
+            font-size: 11px;
+            letter-spacing: 0.05em;
+            transition: all 0.25s ease;
+            color: #94a3b8;
+            white-space: nowrap;
+        }
+
+        .dash-cp-tab.active,
+        .dash-cp-tab:hover {
+            background: rgba(59, 130, 246, 0.2);
+            color: #fff;
+        }
+
+        .dash-cp-tab.active {
+            background: linear-gradient(135deg, #1d4ed8, #2563eb);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.35);
+        }
+
+        .dash-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 0.875rem;
+            padding: 0.75rem 1.1rem;
+            color: #f1f5f9;
+            font-weight: 700;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .dash-input:focus {
+            border-color: #3b82f6;
+        }
+
+        .dash-select {
+            appearance: none;
+        }
+
+        .tag-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(59, 130, 246, 0.12);
+            border: 1px solid rgba(59, 130, 246, 0.25);
+            border-radius: 9999px;
+            padding: 4px 12px;
+            font-size: 11px;
+            font-weight: 900;
+            color: #93c5fd;
+        }
+
+        .tag-chip button {
+            background: none;
+            border: none;
+            color: #60a5fa;
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 1;
+            padding: 0;
+        }
+
+        .dash-section-panel {
+            display: none;
+        }
+
+        .dash-section-panel.active {
+            display: block;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes animate-fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(14px);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        .animate-fade-in {
+            animation: animate-fade-in 0.45s ease-out both;
+        }
+
+        html.light .dash-bot-card {
+            background: rgba(255, 255, 255, 0.85);
+            border-color: rgba(15, 23, 42, 0.09);
+        }
+
+        html.light .dash-input {
+            background: rgba(0, 0, 0, 0.04);
+            border-color: rgba(0, 0, 0, 0.1);
+            color: #0f172a;
+        }
+
+        html.light .tag-chip {
+            background: rgba(37, 99, 235, 0.1);
+            color: #1d4ed8;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-grid overflow-x-hidden selection:bg-blue-500/30">
+
+    <div class="fixed inset-0 gradient-glow pointer-events-none"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass border-b border-white/5 py-4">
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu"
+            class="hidden md:hidden absolute top-[100%] left-0 w-full glass border-b border-white/5 py-2 px-4 flex-col shadow-2xl z-40 bg-[#0b1329]/95 backdrop-blur-2xl transition-all">
+            <button onclick="switchTab('home'); toggleMobileMenu()"
+                class="w-full text-right py-4 px-4 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 font-black flex items-center justify-between gap-3 flex-row-reverse border-b border-white/5 last:border-0 transition-colors">
+                <span data-i18n="home">الرئيسية</span> <i data-lucide="home" class="w-5 h-5 text-blue-500"></i>
+            </button>
+            <button onclick="switchTab('scripts'); toggleMobileMenu()"
+                class="w-full text-right py-4 px-4 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 font-black flex items-center justify-between gap-3 flex-row-reverse border-b border-white/5 last:border-0 transition-colors">
+                <span data-i18n="store">المتجر</span> <i data-lucide="bot" class="w-5 h-5 text-blue-500"></i>
+            </button>
+            <button onclick="switchTab('my-licenses'); toggleMobileMenu()"
+                class="w-full text-right py-4 px-4 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 font-black flex items-center justify-between gap-3 flex-row-reverse border-b border-white/5 last:border-0 transition-colors">
+                <span data-i18n="scripts">اشتراكاتي</span> <i data-lucide="shield-check"
+                    class="w-5 h-5 text-blue-500"></i>
+            </button>
+            <button onclick="switchTab('dashboard'); toggleMobileMenu()"
+                class="w-full text-right py-4 px-4 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 font-black flex items-center justify-between gap-3 flex-row-reverse border-b border-white/5 last:border-0 transition-colors">
+                <span>لوحة التحكم</span> <i data-lucide="layout-dashboard" class="w-5 h-5 text-blue-500"></i>
+            </button>
+            <button id="mobile-tab-admin" onclick="switchTab('admin'); toggleMobileMenu()"
+                class="hidden w-full text-right py-4 px-4 rounded-xl text-slate-300 hover:text-white border-red-500/10 hover:bg-red-500/10 font-black flex items-center justify-between gap-3 flex-row-reverse border-b last:border-0 transition-colors">
+                <span data-i18n="admin" class="text-red-400">الإدارة</span> <i data-lucide="shield-alert"
+                    class="w-5 h-5 text-red-500"></i>
+            </button>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 lg:px-6 flex justify-between items-center relative z-50">
+            <!-- Left: Controls & Auth & Hamburger -->
+            <div class="flex items-center gap-2 lg:gap-3 shrink-0" id="nav-left-section">
+                <!-- Hamburger Menu Button -->
+                <button id="mobile-menu-btn" onclick="toggleMobileMenu()"
+                    class="md:hidden flex items-center justify-center p-2 text-slate-400 hover:text-white transition-colors bg-white/5 rounded-xl border border-white/10 active:scale-95 shrink-0">
+                    <i data-lucide="menu" class="w-5 h-5"></i>
+                </button>
+
+                <div class="flex flex-col sm:flex-row items-center gap-1 bg-transparent sm:bg-white/5 sm:p-1 rounded-xl sm:border sm:border-white/10 shrink-0"
+                    id="controls-container">
+                    <button onclick="toggleTheme()"
+                        class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition-all text-slate-400 hover:text-white"
+                        title="Toggle Theme">
+                        <i data-lucide="moon" id="theme-icon" class="w-4 h-4 text-blue-400"></i>
+                    </button>
+                    <button onclick="toggleLanguage()"
+                        class="px-2 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition-all text-slate-400 hover:text-white text-[10px] font-black"
+                        id="lang-btn">
+                        EN
+                    </button>
+                </div>
+                <div id="auth-section" class="shrink-0 flex items-center"></div>
+            </div>
+
+            <!-- Center: Navigation Tabs (Desktop) -->
+            <div
+                class="hidden md:flex justify-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-max pointer-events-none">
+                <div id="nav-tabs-container" class="pointer-events-auto">
+                    <div id="nav-tabs"
+                        class="flex items-center gap-1 p-1 bg-white/5 backdrop-blur-md rounded-xl border border-white/10">
+                        <button onclick="switchTab('home')" id="tab-home"
+                            class="relative group px-4 lg:px-5 py-2 rounded-lg text-[10px] lg:text-[11px] font-black tracking-wide transition-all duration-300 flex items-center gap-2 text-slate-400 hover:text-white hover:bg-white/5 has-tooltip">
+                            <span class="custom-tooltip" data-i18n-tooltip="home">الرئيسية</span>
+                            <i data-lucide="home" class="w-3 h-3 lg:w-3.5 lg:h-3.5"></i> <span
+                                data-i18n="home">الرئيسية</span>
+                        </button>
+                        <button onclick="switchTab('scripts')" id="tab-scripts"
+                            class="relative group px-4 lg:px-5 py-2 rounded-lg text-[10px] lg:text-[11px] font-black tracking-wide transition-all duration-300 flex items-center gap-2 text-slate-400 hover:text-white hover:bg-white/5 has-tooltip">
+                            <span class="custom-tooltip" data-i18n-tooltip="store">المتجر</span>
+                            <i data-lucide="bot" class="w-3 h-3 lg:w-3.5 lg:h-3.5"></i> <span
+                                data-i18n="store">المتجر</span>
+                        </button>
+                        <button onclick="switchTab('my-licenses')" id="tab-my-licenses"
+                            class="relative group px-4 lg:px-5 py-2 rounded-lg text-[10px] lg:text-[11px] font-black tracking-wide transition-all duration-300 flex items-center gap-2 text-slate-400 hover:text-white hover:bg-white/5 has-tooltip">
+                            <span class="custom-tooltip" data-i18n-tooltip="scripts">اشتراكاتي</span>
+                            <i data-lucide="shield-check" class="w-3 h-3 lg:w-3.5 lg:h-3.5"></i> <span
+                                data-i18n="scripts">اشتراكاتي</span>
+                        </button>
+                        <button onclick="switchTab('dashboard')" id="tab-dashboard"
+                            class="relative group px-4 lg:px-5 py-2 rounded-lg text-[10px] lg:text-[11px] font-black tracking-wide transition-all duration-300 flex items-center gap-2 text-slate-400 hover:text-white hover:bg-white/5 has-tooltip">
+                            <span class="custom-tooltip">لوحة التحكم</span>
+                            <i data-lucide="layout-dashboard" class="w-3 h-3 lg:w-3.5 lg:h-3.5"></i> <span>لوحة
+                                التحكم</span>
+                        </button>
+                        <!-- Admin Tab (Hidden by default) -->
+                        <button onclick="switchTab('admin')" id="tab-admin"
+                            class="hidden relative group px-4 lg:px-5 py-2 rounded-lg text-[10px] lg:text-[11px] font-black tracking-wide transition-all duration-300 flex items-center gap-2 text-slate-400 hover:text-white hover:bg-white/5 border border-red-500/0 hover:border-red-500/30 has-tooltip">
+                            <span class="custom-tooltip" data-i18n-tooltip="admin">الإدارة</span>
+                            <i data-lucide="shield-alert" class="w-3 h-3 lg:w-3.5 lg:h-3.5 text-red-500"></i> <span
+                                data-i18n="admin">الإدارة</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Logo & Name -->
+            <div class="flex items-center justify-end space-x-2 md:space-x-4 space-x-reverse cursor-pointer shrink-0"
+                onclick="switchTab('home')">
+                <span id="store-name-nav"
+                    class="hidden sm:block text-lg lg:text-xl font-black tracking-tight text-white"></span>
+                <div
+                    class="w-10 h-10 lg:w-12 lg:h-12 rounded-xl border border-white/10 flex items-center justify-center bg-[#0b1329] shadow-lg relative overflow-hidden nav-logo-box">
+                    <img id="store-logo" src="" alt="logo" class="w-full h-full object-cover rounded-xl relative z-10">
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-48 pb-20 max-w-7xl mx-auto px-6 relative z-10">
+
+        <!-- HOME PAGE -->
+        <div id="home" class="tab-content active text-center space-y-24">
+            <!-- Hero -->
+            <section class="max-w-4xl mx-auto space-y-10 flex flex-col items-center">
+
+                <div class="relative">
+                    <div class="absolute inset-0 bg-blue-500/20 blur-3xl rounded-full"></div>
+                    <div
+                        class="w-24 h-24 md:w-32 md:h-32 rounded-3xl glass flex items-center justify-center relative border border-white/10 shadow-2xl overflow-hidden">
+                        <img id="hero-logo" src="" alt="Logo" class="w-full h-full object-cover rounded-3xl">
+                    </div>
+                </div>
+
+                <h1
+                    class="text-center text-balance text-5xl md:text-7xl font-black text-white leading-tight tracking-tight italic">
+                    <span class="text-blue-500">Hx Store</span> Subscriptions
+                </h1>
+                <p id="hero-desc" data-i18n="home_hero_desc"
+                    class="text-lg md:text-xl text-slate-400 max-w-2xl font-medium leading-relaxed"></p>
+
+                <div class="flex flex-col sm:flex-row gap-6 pt-6 w-full sm:w-auto">
+                    <button onclick="loginWithDiscord()"
+                        class="flex items-center justify-center gap-3 bg-blue-600 hover:bg-blue-700 text-always-white px-8 py-3.5 rounded-2xl transition-all duration-300 font-black border border-blue-400/30 text-sm shadow-xl shadow-blue-600/30 active:scale-95 login-discord-btn-home w-fit"
+                        dir="ltr">
+                        <span class="text-sm" data-i18n="login_discord">Login with Discord</span>
+                        <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.078.078 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.419-2.157 2.419zm7.974 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.946-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.419-2.157 2.419z" />
+                        </svg>
+                    </button>
+                </div>
+            </section>
+        </div>
+
+        <!-- SCRIPTS PAGE -->
+        <div id="scripts" class="tab-content space-y-12 text-right">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-8">
+                <div class="space-y-2">
+                    <h1 class="text-5xl font-black text-white underline decoration-blue-600 decoration-3 underline-offset-8"
+                        data-i18n="digital_store">متجر البوتات</h1>
+                    <p class="text-slate-400 font-bold" data-i18n="store_desc">تصفح مجموعة من بوتات ديسكورد الاحترافية
+                        واشترك بها بسهولة.</p>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <div class="relative group">
+                        <i data-lucide="search"
+                            class="absolute right-5 top-4 w-5 h-5 text-slate-400 group-focus-within:text-blue-500"></i>
+                        <input type="text" id="script-search" data-i18n="search_placeholder" onkeyup="filterScripts()"
+                            class="glass rounded-2xl py-4 pr-14 pl-6 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500/50 w-full sm:w-64"
+                            placeholder="ابحث عن بوت...">
+                    </div>
+                </div>
+            </div>
+            <div id="scripts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 min-h-[400px]"></div>
+        </div>
+
+        <!-- DASHBOARD PAGE -->
+        <div id="dashboard" class="tab-content space-y-12 text-right">
+
+            <!-- Auth Gate -->
+            <div id="dash-auth-gate" class="text-center space-y-8 py-20">
+                <div
+                    class="w-24 h-24 bg-blue-600/10 rounded-full flex items-center justify-center mx-auto border border-blue-500/20">
+                    <i data-lucide="layout-dashboard" class="w-10 h-10 text-blue-500"></i>
+                </div>
+                <div class="space-y-4">
+                    <h2 class="text-4xl font-black text-white">لوحة التحكم</h2>
+                    <p class="text-slate-400 font-bold max-w-md mx-auto">يرجى تسجيل الدخول بحساب الديسكورد للوصول إلى
+                        لوحة إدارة البوتات.</p>
+                </div>
+                <button onclick="loginWithDiscord()"
+                    class="login-btn text-always-white px-10 py-4 rounded-2xl font-black shadow-xl border border-white/10 mx-auto flex items-center justify-center gap-4 w-fit"
+                    dir="ltr">
+                    <span>تسجيل الدخول عبر ديسكورد</span>
+                    <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                        <path
+                            d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.078.078 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.419-2.157 2.419zm7.974 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.946-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.419-2.157 2.419z" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Main Dashboard View: Active Bots Only -->
+            <div id="dash-server-list" class="hidden animate-fade-in space-y-8">
+                <div
+                    class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-white/5 pb-6">
+                    <div class="space-y-1">
+                        <h2 class="text-3xl font-black text-white flex items-center gap-2">
+                            <i data-lucide="layout-dashboard" class="w-7 h-7 text-blue-500"></i>
+                            لوحة التحكم
+                        </h2>
+                        <p class="text-slate-400 font-bold text-sm">البوتات النشطة في حسابك - يمكنك دعوة البوت أو الدخول
+                            للوحة التحكم لتعديل إعداداته</p>
+                    </div>
+                    <button onclick="loadDashboardServers()"
+                        class="px-4 py-2.5 glass rounded-xl text-slate-400 hover:text-white font-black text-xs flex items-center gap-2 border border-white/10 hover:border-blue-500/30 transition-all cursor-pointer">
+                        <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                        تحديث
+                    </button>
+                </div>
+                <div id="dash-active-bots-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Injected dynamically -->
+                </div>
+            </div>
+
+            <!-- Bot Control Panel (per server) -->
+            <div id="dash-control-panel" class="hidden animate-fade-in pb-20">
+                <!-- Header -->
+                <div
+                    class="flex flex-col md:flex-row justify-between items-start md:items-center gap-5 mb-8 pb-6 border-b border-white/5">
+                    <div class="flex items-center gap-4">
+                        <button onclick="switchTab('dashboard')"
+                            class="w-10 h-10 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-all">
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </button>
+                        <div
+                            class="w-14 h-14 rounded-2xl overflow-hidden border border-white/10 bg-slate-800 shadow-lg flex-shrink-0">
+                            <img id="dcp-server-icon" src="" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-black text-white" id="dcp-server-name">السيرفر</h2>
+                            <div id="dcp-bot-status"
+                                class="inline-flex items-center gap-1.5 text-[11px] font-black text-emerald-400">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> البوت متصل ونشط
+                            </div>
+                        </div>
+                    </div>
+                    <button id="dcp-save-btn" onclick="saveBotConfig()"
+                        class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-2xl transition-all shadow-lg shadow-blue-600/30 flex items-center gap-2">
+                        <i data-lucide="save" class="w-4 h-4"></i> حفظ وتطبيق التغييرات
+                    </button>
+                </div>
+
+                <!-- Tab Bar -->
+                <div
+                    class="flex items-center gap-1.5 p-1.5 bg-white/5 rounded-2xl border border-white/8 mb-8 overflow-x-auto">
+                    <button class="dash-cp-tab active" data-tab="general" onclick="switchDashTab('general')">
+                        <span class="flex items-center gap-1.5"><i data-lucide="settings"
+                                class="w-3.5 h-3.5 inline-block"></i> الإعدادات العامة</span>
+                    </button>
+                    <button class="dash-cp-tab" data-tab="managers" onclick="switchDashTab('managers')">
+                        <span class="flex items-center gap-1.5"><i data-lucide="users"
+                                class="w-3.5 h-3.5 inline-block"></i> المسؤولون</span>
+                    </button>
+                    <button class="dash-cp-tab" data-tab="channels" onclick="switchDashTab('channels')">
+                        <span class="flex items-center gap-1.5"><i data-lucide="hash"
+                                class="w-3.5 h-3.5 inline-block"></i> القنوات المسموحة</span>
+                    </button>
+                    <button class="dash-cp-tab" data-tab="logchan" onclick="switchDashTab('logchan')">
+                        <span class="flex items-center gap-1.5"><i data-lucide="file-text"
+                                class="w-3.5 h-3.5 inline-block"></i> قناة السجلات</span>
+                    </button>
+                </div>
+
+                <!-- ===== GENERAL ===== -->
+                <div class="dash-section-panel active" data-panel="general">
+                    <div class="glass rounded-[2rem] p-8 border border-white/10 space-y-6 max-w-2xl">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-base font-black text-white flex items-center gap-2">
+                                <i data-lucide="bot" class="w-4 h-4 text-blue-400"></i>
+                                إعدادات البوت الأساسية
+                            </h3>
+                            <span
+                                class="px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-full text-xs font-black flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                الحالة: متصل ونشط (للقراءة فقط)
+                            </span>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-xs font-black text-slate-400 uppercase tracking-wider">بادئة الأوامر
+                                (Prefix)</label>
+                            <input type="text" id="cfg-prefix" class="dash-input" placeholder="-">
+                            <p class="text-[11px] text-slate-500 font-bold">الرمز الذي يبدأ به استدعاء أوامر البوت
+                                (مثال: - أو !)</p>
+                        </div>
+
+                        <!-- Read-only Bot Status Info -->
+                        <div class="p-5 bg-white/3 border border-white/8 rounded-2xl space-y-3">
+                            <div class="flex items-center justify-between text-xs font-black text-slate-400">
+                                <span>معلومات نشاط البوت</span>
+                                <span class="text-blue-400 font-bold">مُدار تلقائياً</span>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                                <div class="p-3 bg-white/5 rounded-xl border border-white/5">
+                                    <span class="text-slate-500 block text-[10px] font-bold">نوع النشاط</span>
+                                    <span id="cfg-status-type-display" class="font-black text-white">STREAMING 🔴</span>
+                                </div>
+                                <div class="p-3 bg-white/5 rounded-xl border border-white/5">
+                                    <span class="text-slate-500 block text-[10px] font-bold">نص النشاط الحالي</span>
+                                    <span id="cfg-status-name-display" class="font-black text-white truncate block">Made
+                                        by ! S A U D</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hidden fields to preserve existing DB structure when saving -->
+                        <input type="hidden" id="cfg-status-type" value="STREAMING">
+                        <input type="hidden" id="cfg-status-name" value="Made by ! S A U D">
+                        <input type="hidden" id="cfg-status-url" value="https://twitch.tv/p8y2">
+                    </div>
+                </div>
+
+                <!-- ===== MANAGERS (member picker) ===== -->
+                <div class="dash-section-panel" data-panel="managers">
+                    <div class="glass rounded-[2rem] p-8 border border-white/10 space-y-5 max-w-2xl">
+                        <div>
+                            <h3 class="text-base font-black text-white flex items-center gap-2 mb-1"><i
+                                    data-lucide="users" class="w-4 h-4 text-blue-400"></i> المسؤولون</h3>
+                            <p class="text-xs text-slate-500 font-bold">يمكنهم استخدام أوامر البوت الإدارية</p>
+                        </div>
+                        <!-- Selected managers -->
+                        <div id="manager-tags"
+                            class="flex flex-wrap gap-2 min-h-[44px] p-3 bg-white/3 border border-white/6 rounded-xl">
+                        </div>
+                        <!-- Searchable member picker -->
+                        <div class="relative">
+                            <i data-lucide="search"
+                                class="absolute right-3 top-3.5 w-4 h-4 text-slate-500 pointer-events-none"></i>
+                            <input id="manager-search" type="text" placeholder="ابحث عن عضو..." class="dash-input pr-10"
+                                oninput="filterMemberPicker()">
+                        </div>
+                        <div id="member-picker-list"
+                            class="max-h-56 overflow-y-auto space-y-1 rounded-xl bg-white/3 border border-white/6 p-2">
+                            <p class="text-xs text-slate-500 text-center py-4 font-bold">جاري تحميل الأعضاء...</p>
+                        </div>
+                        <div class="p-3 bg-blue-500/5 border border-blue-500/10 rounded-xl">
+                            <p class="text-xs font-bold text-blue-300 flex items-center gap-2"><i data-lucide="info"
+                                    class="w-3.5 h-3.5 flex-shrink-0"></i> اضغط على العضو لإضافته أو إزالته من قائمة
+                                المسؤولين</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== ALLOWED CHANNELS (channel picker) ===== -->
+                <div class="dash-section-panel" data-panel="channels">
+                    <div class="glass rounded-[2rem] p-8 border border-white/10 space-y-5 max-w-2xl">
+                        <div>
+                            <h3 class="text-base font-black text-white flex items-center gap-2 mb-1"><i
+                                    data-lucide="hash" class="w-4 h-4 text-blue-400"></i> القنوات المسموحة</h3>
+                            <p class="text-xs text-slate-500 font-bold">القنوات التي يعمل فيها البوت — اتركه فارغاً
+                                لجميع القنوات</p>
+                        </div>
+                        <div id="channel-tags"
+                            class="flex flex-wrap gap-2 min-h-[44px] p-3 bg-white/3 border border-white/6 rounded-xl">
+                        </div>
+                        <div class="relative">
+                            <i data-lucide="search"
+                                class="absolute right-3 top-3.5 w-4 h-4 text-slate-500 pointer-events-none"></i>
+                            <input id="channel-search" type="text" placeholder="ابحث عن قناة..."
+                                class="dash-input pr-10" oninput="filterChannelPicker('allowed')">
+                        </div>
+                        <div id="channel-picker-list"
+                            class="max-h-56 overflow-y-auto space-y-1 rounded-xl bg-white/3 border border-white/6 p-2">
+                            <p class="text-xs text-slate-500 text-center py-4 font-bold">جاري تحميل القنوات...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== LOG CHANNEL (channel picker) ===== -->
+                <div class="dash-section-panel" data-panel="logchan">
+                    <div class="glass rounded-[2rem] p-8 border border-white/10 space-y-5 max-w-2xl">
+                        <div>
+                            <h3 class="text-base font-black text-white flex items-center gap-2 mb-1"><i
+                                    data-lucide="file-text" class="w-4 h-4 text-blue-400"></i> قناة السجلات</h3>
+                            <p class="text-xs text-slate-500 font-bold">القناة التي يرسل إليها البوت السجلات والإشعارات
+                            </p>
+                        </div>
+                        <div id="logchan-tags"
+                            class="flex flex-wrap gap-2 min-h-[44px] p-3 bg-white/3 border border-white/6 rounded-xl">
+                        </div>
+                        <div class="relative">
+                            <i data-lucide="search"
+                                class="absolute right-3 top-3.5 w-4 h-4 text-slate-500 pointer-events-none"></i>
+                            <input id="logchan-search" type="text" placeholder="ابحث عن قناة..."
+                                class="dash-input pr-10" oninput="filterChannelPicker('log')">
+                        </div>
+                        <div id="logchan-picker-list"
+                            class="max-h-56 overflow-y-auto space-y-1 rounded-xl bg-white/3 border border-white/6 p-2">
+                            <p class="text-xs text-slate-500 text-center py-4 font-bold">جاري تحميل القنوات...</p>
+                        </div>
+                        <div class="p-3 bg-purple-500/5 border border-purple-500/10 rounded-xl">
+                            <p class="text-xs font-bold text-purple-300 flex items-center gap-2"><i data-lucide="info"
+                                    class="w-3.5 h-3.5 flex-shrink-0"></i> يمكنك اختيار قناة واحدة فقط للسجلات</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- /dash-control-panel -->
+        </div><!-- /dashboard tab -->
+
+        <!-- LICENSE PAGE -->
+        <div id="license" class="tab-content space-y-12 text-right">
+            <div id="license-auth-gate" class="text-center space-y-8 py-20">
+                <div
+                    class="w-24 h-24 bg-blue-600/10 rounded-full flex items-center justify-center mx-auto border border-blue-500/20">
+                    <i data-lucide="lock" class="w-10 h-10 text-blue-500"></i>
+                </div>
+                <div class="space-y-4">
+                    <h2 class="text-4xl font-black text-white" data-i18n="license_title">نظام إدارة اشتراكات البوتات
+                    </h2>
+                    <p class="text-slate-400 font-bold max-w-md mx-auto" data-i18n="license_desc">يرجى تسجيل الدخول
+                        بحساب الديسكورد الخاص بك للوصول إلى اشتراكاتك وتحديد سيرفراتك (Guild ID).</p>
+                </div>
+                <button onclick="loginWithDiscord()"
+                    class="login-btn text-always-white px-10 py-4 rounded-2xl font-black shadow-xl border border-white/10 mx-auto flex items-center justify-center gap-4 w-fit"
+                    dir="ltr">
+                    <span data-i18n="login_discord">تسجيل الدخول عبر ديسكورد</span>
+                    <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.078.078 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.419-2.157 2.419zm7.974 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.946-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.419-2.157 2.419z" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- My Licenses View -->
+            <div id="my-licenses-view" class="hidden space-y-8 animate-fade-in">
+                <div
+                    class="flex flex-col md:flex-row justify-between items-end gap-6 border-b border-white/5 pb-10 px-4">
+                    <div class="space-y-2">
+                        <h2 class="text-4xl font-black text-white" data-i18n="manage_licenses">إدارة اشتراكاتك</h2>
+                        <p class="text-slate-400 font-bold" data-i18n="manage_desc">تصفح وإدارة اشتراكات البوتات الخاصة
+                            بك.</p>
+                    </div>
+                </div>
+
+                <div class="glass rounded-[2rem] border border-white/10" dir="ltr">
+                    <div class="overflow-x-auto rounded-[2rem]">
+                        <div class="min-w-[360px]">
+                            <div
+                                class="grid grid-cols-2 items-center px-8 py-6 license-header-row text-[10px] font-black uppercase tracking-widest text-slate-400 text-center">
+                                <div data-i18n="table_script">Bot Name</div>
+                                <div data-i18n="table_status">Status</div>
+                            </div>
+                            <div id="licenses-list" class="flex flex-col">
+                                <!-- Rows injected here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- (dashboard moved to top-level tab) -->
+
+            <div id="admin-view" class="hidden space-y-8 animate-fade-in pb-20">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div>
+                        <h2 class="text-4xl font-black italic tracking-tighter text-white mb-2" data-i18n="admin_panel">
+                            لوحة التحكم <span class="text-red-500">الإدارية</span></h2>
+                        <p class="text-slate-400 font-bold" data-i18n="admin_desc">إدارة جميع تراخيص واشتراكات البوتات
+                            المسجلة في النظام</p>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <div class="relative group">
+                            <i data-lucide="search"
+                                class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 transition-colors"></i>
+                            <input type="text" id="admin-search-input" oninput="filterAdminLicenses()"
+                                data-i18n="search_admin" placeholder="بحث عن بوت أو مستخدم..."
+                                class="bg-white/5 border border-white/10 rounded-2xl pl-12 pr-6 py-4 text-sm text-white focus:outline-none focus:border-red-500/50 transition-all font-bold w-80">
+                        </div>
+                        <button onclick="showAddLicenseModal()"
+                            class="flex items-center gap-3 px-8 py-4 bg-red-500 hover:bg-red-600 text-white rounded-2xl font-black italic transition-all duration-300 shadow-xl shadow-red-500/20 active:scale-95">
+                            <i data-lucide="plus-circle" class="w-6 h-6"></i>
+                            <span data-i18n="create_license">إنشاء اشتراك جديد</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="glass-morphism rounded-3xl border border-white/5 shadow-2xl">
+                    <div class="overflow-x-auto rounded-3xl">
+                        <div class="min-w-[800px]">
+                            <div
+                                class="grid grid-cols-4 gap-4 px-8 py-6 border-b border-white/5 bg-white/5 text-xs font-black uppercase tracking-widest text-slate-400">
+                                <div data-i18n="table_script">البوت</div>
+                                <div class="text-center" data-i18n="add_license_user">المستخدم (Discord ID)</div>
+                                <div class="text-center" data-i18n="table_status">الحالة</div>
+                                <div class="text-right" data-i18n="table_actions">الإجراءات</div>
+                            </div>
+                            <div id="admin-licenses-list" class="divide-y divide-white/5">
+                                <!-- Admin Licenses loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-20 glass border-t border-white/5 py-16 text-right">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div class="space-y-6">
+                <div class="flex items-center space-x-3 space-x-reverse">
+                    <img id="footer-logo" src="" alt="logo" class="w-8 h-8 rounded-lg">
+                    <span id="footer-name" class="text-xl font-black text-white"></span>
+                </div>
+                <p id="footer-desc" class="text-slate-400 text-sm font-bold leading-relaxed"></p>
+            </div>
+            <div>
+                <h4 class="text-white font-black mb-6 uppercase text-xs tracking-widest underline decoration-blue-600">
+                    روابط سريعة</h4>
+                <ul class="space-y-4 text-slate-400 text-sm font-bold">
+                    <li><a href="#" onclick="switchTab('home')"
+                            class="hover:text-blue-500 transition-colors">الرئيسية</a></li>
+                    <li><a href="#" onclick="switchTab('scripts')"
+                            class="hover:text-blue-500 transition-colors">المتجر</a></li>
+                    <li><a href="#" onclick="switchTab('license')"
+                            class="hover:text-blue-500 transition-colors">اشتراكاتي</a></li>
+                </ul>
+            </div>
+            <div class="flex flex-col items-start md:items-end justify-center">
+                <a id="footer-join-btn" href="#" target="_blank"
+                    class="flex items-center justify-center space-x-2 space-x-reverse bg-blue-600 text-white px-8 py-5 rounded-2xl font-black text-sm hover:bg-blue-500 transition-all shadow-lg shadow-blue-600/30 w-fit">
+                    <i data-lucide="send"></i>
+                    <span data-i18n="discord_btn">Discord Server</span>
+                </a>
+            </div>
+        </div>
+        <div
+            class="mt-16 pt-8 border-t border-white/5 text-center text-slate-400 text-[10px] font-black uppercase tracking-[0.3em]">
+            <p id="footer-copyright" data-i18n="footer_copyright"></p>
+        </div>
+    </footer>
+
+    <!-- Notification Toast -->
+    <div id="notification-container"
+        class="fixed top-24 left-1/2 -translate-x-1/2 z-[200] flex flex-col gap-4 w-full max-w-sm pointer-events-none">
+    </div>
+
+    <!-- Discord ID Change Modal -->
+    <div id="discord-modal"
+        class="fixed inset-0 bg-black/50 backdrop-blur-md z-[100] flex items-center justify-center opacity-0 pointer-events-none transition-all duration-500 p-4">
+        <div
+            class="glass border border-white/10 w-full max-w-sm rounded-[2.5rem] p-8 relative overflow-hidden shadow-2xl scale-95 transition-all duration-500">
+            <div class="relative z-10 text-center">
+                <div
+                    class="w-16 h-16 bg-blue-500/10 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-blue-500/20">
+                    <i data-lucide="user" class="w-8 h-8 text-blue-500"></i>
+                </div>
+                <h3 class="text-xl font-black text-white mb-2 italic" data-i18n="discord_modal_title">تغيير المعرف</h3>
+                <p class="text-slate-400 text-xs mb-8 font-black" data-i18n="discord_modal_desc">أدخل معرف الديسكورد
+                    الجديد للعميل</p>
+
+                <input type="hidden" id="edit-discord-token">
+                <div class="relative mb-6">
+                    <input type="text" id="new-discord-input" data-i18n="table_user"
+                        class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white text-sm font-bold focus:border-blue-500/50 outline-none transition-all text-center placeholder:text-slate-600"
+                        placeholder="Discord ID">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <button onclick="closeDiscordModal()"
+                        class="w-full py-4 rounded-2xl bg-white/5 text-slate-400 text-xs font-black hover:bg-white/10 transition-all"
+                        data-i18n="cancel">إلغاء</button>
+                    <button onclick="updateDiscordID()"
+                        class="w-full py-4 rounded-2xl bg-blue-600 text-white text-xs font-black shadow-lg shadow-blue-500/20 hover:bg-blue-500 transition-all"
+                        data-i18n="update">تحديث</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add License Modal (New) -->
+    <div id="add-license-modal"
+        class="fixed inset-0 z-[100] hidden items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm">
+        <div
+            class="glass w-full max-w-lg rounded-[2.5rem] border border-white/10 p-6 sm:p-10 space-y-8 relative overflow-hidden h-fit max-h-screen overflow-y-auto">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-red-500/10 blur-3xl rounded-full"></div>
+
+            <div class="flex justify-between items-center shrink-0">
+                <h3 class="text-2xl sm:text-3xl font-black text-white" data-i18n="add_license_title">إنشاء اشتراك <span
+                        class="text-red-500">جديد</span></h3>
+                <button onclick="closeAddLicenseModal()"
+                    class="w-8 h-8 sm:w-10 sm:h-10 glass rounded-xl flex items-center justify-center hover:bg-white/5 transition-all pointer-events-auto shrink-0">
+                    <i data-lucide="x" class="w-4 h-4 sm:w-5 sm:h-5 text-slate-500"></i>
+                </button>
+            </div>
+
+            <div class="space-y-6">
+                <div class="space-y-2">
+                    <label class="text-[10px] text-slate-500 font-black uppercase tracking-widest pr-2">Discord ID
+                        للعميل</label>
+                    <input type="text" id="add-target-user" placeholder="مثال: 123456789"
+                        class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-red-500/50 transition-all font-bold tracking-wider">
+                </div>
+                <div class="space-y-2 relative">
+                    <label class="text-[10px] text-slate-500 font-black uppercase tracking-widest pr-2">اسم
+                        البوت</label>
+                    <div id="custom-dropdown" class="relative">
+                        <button onclick="toggleDropdown()"
+                            class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white flex justify-between items-center focus:outline-none focus:border-red-500/50 transition-all font-bold">
+                            <span id="selected-resource-text" class="text-white/40">اختر البوت...</span>
+                            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-500"></i>
+                        </button>
+
+                        <div id="dropdown-options"
+                            class="hidden absolute top-[110%] left-0 right-0 glass border border-white/10 rounded-2xl overflow-hidden z-[110] shadow-2xl animate-fade-in divide-y divide-white/5">
+                            <div class="p-2">
+                                <input type="text" id="dropdown-search" oninput="filterDropdownOptions()"
+                                    placeholder="ابحث عن بوت..."
+                                    class="w-full bg-white/10 border-0 rounded-xl px-4 py-2 text-xs text-white focus:outline-none">
+                            </div>
+                            <div id="options-list" class="max-h-48 overflow-y-auto">
+                                <!-- Options injected here -->
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="add-resource-name" value="">
+                </div>
+                <div id="custom-resource-container" class="hidden space-y-2 animate-fade-in pt-2">
+                    <label class="text-[10px] text-slate-500 font-black uppercase tracking-widest pr-2 text-red-400">اسم
+                        البوت اليـدوي</label>
+                    <input type="text" id="add-resource-custom" placeholder="ادخل اسم البوت هنا..."
+                        class="w-full bg-red-500/5 border border-red-500/20 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-red-500/50 transition-all font-bold tracking-wider">
+                </div>
+            </div>
+
+            <div class="flex gap-4 pt-4">
+                <button onclick="submitAddLicense()"
+                    class="flex-1 bg-red-500 text-white py-4 rounded-2xl font-black shadow-lg shadow-red-500/20 hover:bg-red-600 transition-all active:scale-95"
+                    data-i18n="add_license_btn">إنشاء الاشتراك</button>
+                <button onclick="closeAddLicenseModal()"
+                    class="flex-1 glass text-slate-400 py-4 rounded-2xl font-black hover:bg-white/5 transition-all"
+                    data-i18n="cancel">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeDeleteModal()"></div>
+        <div
+            class="glass max-w-md w-full rounded-[2.5rem] p-10 relative z-10 border border-white/10 shadow-2xl animate-modal-in">
+            <div class="text-center space-y-6">
+                <div
+                    class="w-20 h-20 bg-red-500/10 rounded-3xl flex items-center justify-center border border-red-500/20 mx-auto">
+                    <i data-lucide="trash-2" class="w-10 h-10 text-red-500"></i>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-black text-white mb-2 italic">تأكيد الحذف</h3>
+                    <p class="text-slate-400 font-bold leading-relaxed px-4">هل أنت متأكد من رغبتك في حذف هذا
+                        الترخيص؟<br><span class="text-red-500/80 text-sm italic">لا يمكن التراجع عن هذا الإجراء.</span>
+                    </p>
+                </div>
+                <div class="grid grid-cols-2 gap-4 pt-4">
+                    <button onclick="closeDeleteModal()"
+                        class="px-6 py-4 rounded-2xl bg-white/5 text-white font-black hover:bg-white/10 transition-all uppercase text-[10px] tracking-widest">إلغاء</button>
+                    <button id="confirm-delete-btn"
+                        class="px-6 py-4 rounded-2xl bg-red-500 text-white font-black hover:bg-red-600 transition-all shadow-xl shadow-red-500/20 uppercase text-[10px] tracking-widest">حذف
+                        السكريبت</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Viewer Modal -->
+    <div id="image-viewer-modal"
+        class="fixed inset-0 z-[300] hidden items-center justify-center p-4 bg-black/95 backdrop-blur-sm"
+        onclick="closeImageViewer()">
+        <div class="relative max-w-5xl w-full h-full flex items-center justify-center pointer-events-none">
+            <img id="view-full-image" src="" alt="View Product"
+                class="max-w-full max-h-full object-contain rounded-2xl shadow-2xl pointer-events-auto animate-modal-in">
+            <button onclick="closeImageViewer()"
+                class="absolute top-4 right-4 w-12 h-12 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center backdrop-blur-md transition-all pointer-events-auto">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        let currentLang = localStorage.getItem('lang') || 'ar';
+        let currentTheme = localStorage.getItem('theme') || 'dark';
+        let isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+        let currentEditingLicenseId = null;
+
+        let userLicenses = JSON.parse(localStorage.getItem('userLicenses')) || [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            applyTheme(currentTheme);
+            applyLanguage(currentLang);
+            initializeStore();
+            renderScripts();
+            updateAuthState();
+
+            // Handle Discord OAuth2 Callback
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('code')) {
+                handleDiscordCallback(urlParams.get('code'));
+            }
+
+            const hash = window.location.hash.replace('#', '');
+            const validTabs = ['home', 'scripts', 'my-licenses', 'admin'];
+            if (hash && validTabs.includes(hash)) switchTab(hash);
+        });
+
+        function applyTheme(theme) {
+            const html = document.documentElement;
+            const icon = document.getElementById('theme-icon');
+            if (theme === 'light') {
+                html.classList.remove('dark');
+                html.classList.add('light');
+                if (icon) {
+                    icon.setAttribute('data-lucide', 'sun');
+                    lucide.createIcons();
+                }
+            } else {
+                html.classList.remove('light');
+                html.classList.add('dark');
+                if (icon) {
+                    icon.setAttribute('data-lucide', 'moon');
+                    lucide.createIcons();
+                }
+            }
+            localStorage.setItem('theme', theme);
+        }
+
+        function toggleTheme() {
+            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            applyTheme(currentTheme);
+        }
+
+        function applyLanguage(lang) {
+            const html = document.documentElement;
+            html.lang = lang;
+            html.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+            const btn = document.getElementById('lang-btn');
+            if (btn) btn.innerText = lang === 'ar' ? 'EN' : 'AR';
+
+            // Update all elements with data-i18n attribute
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) {
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                        el.placeholder = TRANSLATIONS[lang][key];
+                    } else {
+                        // Handle Lucide icons if present
+                        const icon = el.querySelector('i[data-lucide]');
+                        if (icon) {
+                            const iconHtml = icon.outerHTML;
+                            el.innerHTML = iconHtml + ' ' + TRANSLATIONS[lang][key];
+                        } else {
+                            el.innerText = TRANSLATIONS[lang][key];
+                        }
+                    }
+                }
+            });
+
+            // Update custom Tooltips
+            document.querySelectorAll('.custom-tooltip').forEach(el => {
+                const key = el.getAttribute('data-i18n-tooltip');
+                if (key && TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) {
+                    el.innerText = TRANSLATIONS[lang][key];
+                }
+            });
+
+            localStorage.setItem('lang', lang);
+            lucide.createIcons();
+        }
+
+        async function callApi(endpoint, options = {}) {
+            const url = (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost')
+                ? `http://localhost:3001${endpoint}`
+                : endpoint;
+            return fetch(url, options);
+        }
+
+        async function handleDiscordCallback(code) {
+            showNotification("جاري تسجيل الدخول عبر ديسكورد...", "success");
+
+            try {
+                // Try Serverless API endpoint first
+                const response = await fetch('/api/auth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        code: code,
+                        redirect_uri: CONFIG.redirectUri
+                    })
+                });
+
+                if (response.ok) {
+                    const userData = await response.json();
+                    saveAndLoginUser(userData.id, userData.username, userData.avatar, userData.access_token);
+                    return;
+                }
+            } catch (err) {
+                console.log("Server API endpoint /api/auth unavailable locally. Exchanging via Discord client fallback...");
+            }
+
+            // Client-side fallback for Five Server / local static environments:
+            try {
+                const tokenRes = await fetch('https://discord.com/api/oauth2/token', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({
+                        client_id: CONFIG.discordClientId,
+                        client_secret: "LqR_VnAmjBbvjdbHbAM89MOcZU470QjA",
+                        grant_type: 'authorization_code',
+                        code: code,
+                        redirect_uri: CONFIG.redirectUri
+                    })
+                });
+
+                const tokenData = await tokenRes.json();
+                if (tokenData.access_token) {
+                    const userRes = await fetch('https://discord.com/api/users/@me', {
+                        headers: { Authorization: `Bearer ${tokenData.access_token}` }
+                    });
+                    const user = await userRes.json();
+                    if (user.id) {
+                        const avatarUrl = user.avatar ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png` : `https://cdn.discordapp.com/embed/avatars/0.png`;
+                        saveAndLoginUser(user.id, user.username, avatarUrl, tokenData.access_token);
+                        return;
+                    }
+                }
+                throw new Error("Failed to get Discord user details");
+            } catch (fallbackErr) {
+                console.error("Direct Discord login error:", fallbackErr);
+                showNotification("حدث خطأ أثناء الاتصال بحساب الديسكورد", "error");
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        }
+
+        function saveAndLoginUser(id, username, avatar, accessToken) {
+            isLoggedIn = true;
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('username', username);
+            localStorage.setItem('avatar', avatar || "https://cdn.discordapp.com/embed/avatars/0.png");
+            localStorage.setItem('userId', id);
+            if (accessToken) localStorage.setItem('discord_access_token', accessToken);
+            const isAdmin = CONFIG.adminIds.includes(id);
+            localStorage.setItem('isAdmin', isAdmin);
+            const adminTab = document.getElementById('tab-admin');
+            if (isAdmin && adminTab) {
+                adminTab.classList.remove('hidden');
+            }
+
+            window.history.replaceState({}, document.title, window.location.pathname);
+            updateAuthState();
+            showNotification(`أهلاً بك مجدداً ${username}!`);
+            if (window.location.hash === '#license') renderLicenses();
+        }
+
+        function showNotification(message, type = 'success') {
+            const container = document.getElementById('notification-container');
+            const toast = document.createElement('div');
+            const color = type === 'success' ? 'blue' : (type === 'error' ? 'red' : 'blue');
+
+            toast.className = `glass p-4 rounded-2xl border border-${color}-500/20 flex items-center gap-4 animate-slide-down pointer-events-auto shadow-2xl`;
+            toast.style.animation = 'slideIn 0.5s ease-out forwards';
+
+            toast.innerHTML = `
+                <div class="w-10 h-10 rounded-xl bg-${color}-500/10 flex items-center justify-center border border-${color}-500/20">
+                    <i data-lucide="${type === 'success' ? 'check' : 'alert-circle'}" class="w-5 h-5 text-${color}-500"></i>
+                </div>
+                <p class="text-sm font-black text-white px-2">${message}</p>
+            `;
+
+            container.appendChild(toast);
+            lucide.createIcons();
+
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.5s ease-in forwards';
+                setTimeout(() => toast.remove(), 500);
+            }, 3000);
+        }
+
+        // Add slide animations to style
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateY(-100%); opacity: 0; }
+                to { transform: translateY(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateY(0); opacity: 1; }
+                to { transform: translateY(-20px); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        function initializeStore() {
+            const setSafeText = (id, text) => {
+                const el = document.getElementById(id);
+                if (el) el.innerText = text;
+            };
+
+            setSafeText('cooldown-text', CONFIG.ipCooldownTime);
+
+            // Update Favicon
+            const favicon = document.getElementById('favicon-link');
+            const shortcutFavicon = document.getElementById('shortcut-favicon-link');
+            if (favicon) favicon.href = CONFIG.faviconURL;
+            if (shortcutFavicon) shortcutFavicon.href = CONFIG.faviconURL;
+
+            const logo = document.getElementById('store-logo');
+            if (logo) logo.src = CONFIG.logoURL;
+            const fLogo = document.getElementById('footer-logo');
+            if (fLogo) fLogo.src = CONFIG.logoURL;
+            const hLogo = document.getElementById('hero-logo');
+            if (hLogo) hLogo.src = CONFIG.logoURL;
+
+            const discordBtn = document.getElementById('footer-join-btn');
+            if (discordBtn) discordBtn.href = CONFIG.discordInvite;
+
+            // Populate script dropdown options
+            const optionsList = document.getElementById('options-list');
+            if (optionsList) {
+                renderDropdownOptions(CONFIG.scripts);
+            }
+
+            // Show the tabs container
+            const container = document.getElementById('nav-tabs-container');
+            if (container) container.classList.remove('hidden');
+
+            lucide.createIcons();
+        }
+
+        function toggleDropdown() {
+            const options = document.getElementById('dropdown-options');
+            options.classList.toggle('hidden');
+        }
+
+        function renderDropdownOptions(scripts) {
+            const list = document.getElementById('options-list');
+            list.innerHTML = scripts.map(s => `
+                <div onclick="selectResource('${s.name}')" class="px-6 py-3 text-sm text-slate-300 hover:bg-white/10 hover:text-white cursor-pointer transition-all flex items-center justify-between group">
+                    <span>${s.name}</span>
+                    <i data-lucide="check" class="w-3 h-3 text-blue-500 opacity-0 group-hover:opacity-100"></i>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function filterDropdownOptions() {
+            const query = document.getElementById('dropdown-search').value.toLowerCase();
+            const filtered = CONFIG.scripts.filter(s => s.name.toLowerCase().includes(query));
+            renderDropdownOptions(filtered);
+        }
+
+        function selectResource(name) {
+            document.getElementById('add-resource-name').value = name;
+            document.getElementById('selected-resource-text').innerText = name;
+            document.getElementById('selected-resource-text').classList.remove('text-white/40', 'text-blue-500');
+            document.getElementById('selected-resource-text').classList.add('text-white');
+            document.getElementById('custom-resource-container').classList.add('hidden');
+            toggleDropdown();
+        }
+
+        function selectCustomResource() {
+            document.getElementById('add-resource-name').value = 'OTHER';
+            document.getElementById('selected-resource-text').innerText = 'اسم مخصص';
+            document.getElementById('selected-resource-text').classList.remove('text-white/40', 'text-white');
+            document.getElementById('selected-resource-text').classList.add('text-blue-500');
+            document.getElementById('custom-resource-container').classList.remove('hidden');
+            toggleDropdown();
+        }
+
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.remove('hidden');
+                mobileMenu.classList.add('flex');
+            } else {
+                mobileMenu.classList.add('hidden');
+                mobileMenu.classList.remove('flex');
+            }
+        }
+
+
+        function switchTab(viewId) {
+            // Top-level View sections
+            const views = ['home', 'scripts', 'license', 'dashboard'];
+
+            // Map sub-views to top-level views
+            let targetView = viewId;
+            if (viewId === 'my-licenses' || viewId === 'admin') targetView = 'license';
+            if (viewId === 'dashboard' || viewId === 'dash-control') targetView = 'dashboard';
+
+            views.forEach(v => {
+                const el = document.getElementById(v);
+                if (el) {
+                    if (v === targetView) {
+                        el.classList.add('active');
+                        el.classList.remove('hidden');
+                    } else {
+                        el.classList.remove('active');
+                        el.classList.add('hidden');
+                    }
+                }
+            });
+
+            // Internal logic for 'license' sub-views
+            if (targetView === 'license') {
+                const authGate = document.getElementById('license-auth-gate');
+                const myLicensesView = document.getElementById('my-licenses-view');
+                const adminView = document.getElementById('admin-view');
+
+                if (!isLoggedIn) {
+                    authGate.classList.remove('hidden');
+                    myLicensesView.classList.add('hidden');
+                    adminView.classList.add('hidden');
+                } else {
+                    authGate.classList.add('hidden');
+                    if (viewId === 'admin') {
+                        myLicensesView.classList.add('hidden');
+                        adminView.classList.remove('hidden');
+                        fetchAllLicenses();
+                    } else {
+                        myLicensesView.classList.remove('hidden');
+                        adminView.classList.add('hidden');
+                        renderLicenses();
+                    }
+                }
+            }
+
+            // Internal logic for 'dashboard' sub-views
+            if (targetView === 'dashboard') {
+                const dashAuthGate = document.getElementById('dash-auth-gate');
+                const dashServerList = document.getElementById('dash-server-list');
+                const dashControlPanel = document.getElementById('dash-control-panel');
+
+                if (!isLoggedIn) {
+                    if (dashAuthGate) dashAuthGate.classList.remove('hidden');
+                    if (dashServerList) dashServerList.classList.add('hidden');
+                    if (dashControlPanel) dashControlPanel.classList.add('hidden');
+                } else {
+                    if (dashAuthGate) dashAuthGate.classList.add('hidden');
+                    if (viewId === 'dash-control') {
+                        if (dashServerList) dashServerList.classList.add('hidden');
+                        if (dashControlPanel) dashControlPanel.classList.remove('hidden');
+                    } else {
+                        if (dashServerList) dashServerList.classList.remove('hidden');
+                        if (dashControlPanel) dashControlPanel.classList.add('hidden');
+                        loadDashboardServers();
+                    }
+                }
+            }
+
+            // Update Navbar Button Styles
+            const buttons = {
+                'home': 'tab-home',
+                'scripts': 'tab-scripts',
+                'my-licenses': 'tab-my-licenses',
+                'dashboard': 'tab-dashboard',
+                'admin': 'tab-admin'
+            };
+
+            const activeKey = (viewId === 'my-licenses' || viewId === 'admin') ? viewId :
+                (viewId === 'dashboard' || viewId === 'dash-control') ? 'dashboard' : viewId;
+
+            Object.entries(buttons).forEach(([id, elementId]) => {
+                const btn = document.getElementById(elementId);
+                if (btn) {
+                    if (id === activeKey) {
+                        btn.classList.add('bg-blue-600', 'text-white', 'shadow-lg', 'shadow-blue-600/30');
+                        btn.classList.remove('text-slate-400', 'hover:bg-white/5');
+                    } else {
+                        btn.classList.remove('bg-blue-600', 'text-white', 'shadow-lg', 'shadow-blue-600/30');
+                        btn.classList.add('text-slate-400', 'hover:bg-white/5');
+                    }
+                }
+            });
+
+            window.location.hash = viewId;
+            lucide.createIcons();
+        }
+
+        let allAdminLicenses = JSON.parse(localStorage.getItem('hx_store_subscriptions') || '[]');
+
+        function saveLocalSubscriptions() {
+            localStorage.setItem('hx_store_subscriptions', JSON.stringify(allAdminLicenses));
+        }
+
+        async function fetchAllLicenses() {
+            const adminList = document.getElementById('admin-licenses-list');
+            if (!adminList) return;
+
+            adminList.innerHTML = '<div class="p-20 text-center animate-pulse"><p class="text-xl font-bold text-slate-500">جاري تحميل البيانات...</p></div>';
+
+            const userId = localStorage.getItem('userId');
+
+            try {
+                const response = await callApi('/api/admin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'LIST_ALL', userId })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    allAdminLicenses = data.licenses || [];
+                    saveLocalSubscriptions();
+                } else {
+                    allAdminLicenses = JSON.parse(localStorage.getItem('hx_store_subscriptions') || '[]');
+                }
+                renderAdminList(allAdminLicenses);
+            } catch (err) {
+                allAdminLicenses = JSON.parse(localStorage.getItem('hx_store_subscriptions') || '[]');
+                renderAdminList(allAdminLicenses);
+            }
+        }
+
+        function showAddLicenseModal() {
+            document.getElementById('add-license-modal').classList.remove('hidden');
+            document.getElementById('add-license-modal').classList.add('flex');
+        }
+
+        function closeAddLicenseModal() {
+            document.getElementById('add-license-modal').classList.add('hidden');
+            document.getElementById('add-license-modal').classList.remove('flex');
+        }
+
+        async function submitAddLicense() {
+            const targetUser = document.getElementById('add-target-user').value;
+            const resourceSelect = document.getElementById('add-resource-name').value;
+            const resourceCustom = document.getElementById('add-resource-custom').value;
+
+            const resource = resourceSelect === 'OTHER' ? resourceCustom : resourceSelect;
+
+            if (!targetUser || !resource) {
+                showNotification('يرجى ملء جميع الحقول المطلوبـة', 'error');
+                return;
+            }
+
+            addLicense(targetUser, resource);
+            closeAddLicenseModal();
+        }
+
+        async function addLicense(discord_id, resource) {
+            const adminId = localStorage.getItem('userId');
+            showNotification('جاري إنشاء الاشتراك...', 'info');
+
+            try {
+                const response = await callApi('/api/admin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'CREATE',
+                        userId: adminId,
+                        targetUser: discord_id,
+                        resource,
+                        webhookName: CONFIG.webhookConfig.name,
+                        webhookAvatar: CONFIG.webhookConfig.avatar
+                    })
+                });
+
+                if (response.ok) {
+                    showNotification('تم إنشاء الاشتراك بنجاح في قاعدة بيانات Aiven Cloud!', 'success');
+                    fetchAllLicenses();
+                    return;
+                }
+            } catch (err) {
+                console.warn("Local API connection failed:", err.message);
+            }
+
+            // Fallback for Five Server or local environment: add to persistent localStorage & array
+            const tok = 'FS-' + Array.from({ length: 8 }, () => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'[Math.floor(Math.random() * 36)]).join('');
+            const newSub = { id: tok, name: resource, discord_id: discord_id, status: "ACTIVE" };
+            allAdminLicenses.push(newSub);
+            saveLocalSubscriptions();
+
+            // Send webhook log directly
+            if (CONFIG.webhookConfig && CONFIG.webhookConfig.url) {
+                try {
+                    fetch(CONFIG.webhookConfig.url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            username: CONFIG.webhookConfig.name || "Hx Store Audit",
+                            avatar_url: CONFIG.webhookConfig.avatar || "",
+                            embeds: [{
+                                title: "🛡️ إنشاء اشتراك بوت جديد",
+                                color: 0x00ff00,
+                                fields: [
+                                    { name: "👤 المشرف", value: `<@${adminId}>`, inline: true },
+                                    { name: "🤖 البوت", value: `\`${resource}\``, inline: true },
+                                    { name: "👥 العميل", value: `<@${discord_id}>`, inline: true }
+                                ],
+                                timestamp: new Date()
+                            }]
+                        })
+                    });
+                } catch (e) { }
+            }
+
+            showNotification('تم إنشاء الاشتراك بنجاح والحفظ بنجاح!', 'success');
+            renderAdminList(allAdminLicenses);
+        }
+
+
+        function renderScripts() {
+            const container = document.getElementById('scripts-grid');
+            if (!container) return;
+            container.innerHTML = '';
+            CONFIG.scripts.forEach(script => container.appendChild(createScriptCard(script)));
+            lucide.createIcons();
+        }
+
+        function createScriptCard(script) {
+            const card = document.createElement('div');
+            card.className = "group glass rounded-[2rem] overflow-hidden cyber-border transition-all flex flex-col h-full";
+            card.innerHTML = `
+                <div class="relative h-48 p-4">
+                    ${script.image ?
+                    `<img src="${script.image}" onclick="openImageViewer('${script.image}')" class="w-full h-full object-cover rounded-2xl transition-transform duration-700 group-hover:scale-105 cursor-zoom-in">` :
+                    `<div class="w-full h-full bg-white/5 rounded-2xl flex items-center justify-center border border-white/5">
+                            <i data-lucide="bot" class="w-12 h-12 text-slate-500"></i>
+                        </div>`
+                }
+                    ${script.tag ? `<span class="absolute top-6 right-6 badge text-blue-400 text-[8px] font-black px-3 py-1 rounded-full uppercase">${script.tag}</span>` : ''}
+                </div>
+                <div class="p-6 pt-0 flex flex-col flex-grow space-y-4 text-right">
+                    <div class="flex justify-between items-center">
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">${script.category}</span>
+                        <span class="text-base font-black text-blue-400">${script.price}</span>
+                    </div>
+                    <h3 class="text-xl font-black text-white group-hover:text-blue-400 transition-colors">${script.name}</h3>
+                    <p class="text-slate-400 text-[13px] font-bold leading-relaxed line-clamp-2">${script.description}</p>
+                    
+                    <div class="pt-4 mt-auto border-t border-white/5 space-y-3">
+                        <p class="text-[10px] text-blue-400/80 font-black italic" data-i18n="buy_ticket">To buy, open a ticket in our Discord server</p>
+                        <a href="${CONFIG.discordInvite}" target="_blank" class="flex items-center justify-center gap-2 w-full py-3 bg-blue-600/10 hover:bg-blue-600 text-white rounded-xl border border-blue-500/20 transition-all font-black text-[11px] group/btn">
+                            <i data-lucide="message-square" class="w-4 h-4 text-blue-400 group-hover/btn:text-white transition-colors"></i>
+                            Discord Server
+                        </a>
+                    </div>
+                </div>
+            `;
+            return card;
+        }
+
+        function filterScripts() {
+            const query = document.getElementById('script-search').value.toLowerCase();
+            const container = document.getElementById('scripts-grid');
+            const filtered = CONFIG.scripts.filter(s => s.name.toLowerCase().includes(query) || s.description.toLowerCase().includes(query));
+            container.innerHTML = '';
+            filtered.forEach(script => container.appendChild(createScriptCard(script)));
+            lucide.createIcons();
+        }
+
+        async function renderLicenses() {
+            const authGate = document.getElementById('license-auth-gate');
+            const dashboard = document.getElementById('my-licenses-view');
+            if (!authGate || !dashboard) return;
+
+            if (!isLoggedIn) {
+                authGate.classList.remove('hidden');
+                dashboard.classList.add('hidden');
+                return;
+            }
+
+            authGate.classList.add('hidden');
+            dashboard.classList.remove('hidden');
+
+            const userId = localStorage.getItem('userId');
+            const list = document.getElementById('licenses-list');
+            list.innerHTML = '<div class="p-10 text-center animate-pulse text-slate-400 font-bold">جاري تحميل تراخيصك...</div>';
+
+            let myLicenses = [];
+            try {
+                const response = await callApi('/api/admin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'LIST_ALL', userId })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    myLicenses = (data.licenses || []).filter(l => l.discord_id === userId);
+                } else {
+                    myLicenses = allAdminLicenses.filter(l => l.discord_id === userId || !l.discord_id);
+                }
+            } catch (err) {
+                myLicenses = allAdminLicenses.filter(l => l.discord_id === userId || !l.discord_id);
+            }
+
+            list.innerHTML = '';
+            if (myLicenses.length === 0) {
+                list.innerHTML = '<div class="p-10 text-center text-slate-400 font-bold italic">لا تمتلك أي اشتراكات نشطة حالياً.</div>';
+                return;
+            }
+
+            myLicenses.forEach(license => {
+                const scriptData = CONFIG.scripts.find(s => s.name === license.name) || {};
+                const row = document.createElement('div');
+                row.className = "grid grid-cols-2 items-center px-8 py-6 hover:bg-white/5 transition-all text-sm font-bold text-slate-300 text-center border-b border-white/5 last:border-0";
+                row.innerHTML = `
+                    <div class="text-white font-black italic">${license.name}</div>
+                    <div class="flex justify-center">
+                        <span class="px-3 py-1 rounded-full ${license.status === 'ACTIVE' || !license.status ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'} text-[10px] font-black">
+                            ${license.status === 'ACTIVE' || !license.status ? 'نشط' : 'غير نشط'}
+                        </span>
+                    </div>
+                `;
+                list.appendChild(row);
+            });
+            lucide.createIcons();
+        }
+
+        /* ======= DASHBOARD PAGE LOGIC ======= */
+        let currentActiveBot = 'Broadcast-Sub'; // always this bot for now
+        let currentGuildId = null;
+        let dashManagerList = [];
+        let dashAllowedChannels = [];
+        let dashLogChannel = [];
+        let activeDashTab = 'general';
+        let allGuildMembers = [];
+        let allGuildChannels = [];
+        let allDashServers = []; // cache for search
+
+        /* ---- switchTab: handle dashboard sub-states ---- */
+        // Already handled in the main switchTab above.
+        // We patch: 'dash-control' viewId → show control-panel, else show server-list
+        function inviteBot(url) {
+            const inviteUrl = url || 'https://discord.com/oauth2/authorize?client_id=1538449747915055175&permissions=8&integration_type=0&scope=bot+applications.commands';
+            window.open(inviteUrl, '_blank', 'noopener,noreferrer');
+        }
+
+        async function renderActiveBotsSection() {
+            const container = document.getElementById('dash-active-bots-container');
+            if (!container) return;
+            const userId = localStorage.getItem('userId');
+
+            container.innerHTML = '<div class="col-span-full py-12 text-center text-slate-400 font-bold animate-pulse">جاري فحص حالة اشتراك البوت...</div>';
+
+            let myBots = [];
+            try {
+                const response = await callApi('/api/admin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'LIST_ALL', userId })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    myBots = (data.licenses || []).filter(l => l.discord_id === userId);
+                } else {
+                    const localSubs = JSON.parse(localStorage.getItem('hx_store_subscriptions') || '[]');
+                    myBots = localSubs.filter(l => l.discord_id === userId);
+                }
+            } catch (e) {
+                const localSubs = JSON.parse(localStorage.getItem('hx_store_subscriptions') || '[]');
+                myBots = localSubs.filter(l => l.discord_id === userId);
+            }
+
+            if (myBots.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full flex flex-col items-center gap-4 py-16 text-center">
+                        <div class="w-20 h-20 rounded-full bg-slate-800 border border-white/5 flex items-center justify-center">
+                            <i data-lucide="bot-off" class="w-9 h-9 text-slate-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-black text-white mb-1">لا توجد اشتراكات بوتات مسجلة بحسابك</h3>
+                            <p class="text-slate-400 font-bold text-xs">يمكنك تفعيل اشتراك أو شراء بوت من المتجر للبدء</p>
+                        </div>
+                        <button onclick="switchTab('scripts')" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl text-xs transition-all shadow-lg shadow-blue-600/30">
+                            تصفح المتجر
+                        </button>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            container.innerHTML = myBots.map(b => {
+                const isActive = b.status === 'ACTIVE' || b.status === 'active';
+                const scriptData = CONFIG.scripts.find(s => s.name === b.name) || {
+                    name: b.name,
+                    image: 'https://i.ibb.co/j97cvnZt/Bot.png',
+                    downloadUrl: 'https://discord.com/oauth2/authorize?client_id=1538449747915055175&permissions=8&integration_type=0&scope=bot+applications.commands'
+                };
+                const inviteUrl = scriptData.downloadUrl || 'https://discord.com/oauth2/authorize?client_id=1538449747915055175&permissions=8&integration_type=0&scope=bot+applications.commands';
+
+                return `
+                    <div class="dash-bot-card p-6 flex flex-col justify-between gap-5 glass rounded-3xl border ${isActive ? 'border-white/10 hover:border-blue-500/30' : 'border-red-500/20 bg-red-500/5'} shadow-2xl transition-all">
+                        <div class="flex items-center gap-4">
+                            <div class="w-16 h-16 rounded-2xl overflow-hidden border border-white/10 bg-slate-800 flex-shrink-0 shadow-lg">
+                                <img src="${scriptData.image || 'https://i.ibb.co/j97cvnZt/Bot.png'}" class="w-full h-full object-cover" onerror="this.src='https://i.ibb.co/j97cvnZt/Bot.png'">
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h4 class="font-black text-white text-base truncate">${b.name}</h4>
+                                ${isActive ? `
+                                    <span class="inline-flex items-center gap-1.5 text-xs font-black text-emerald-400 mt-1">
+                                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> اشتراك نشط ومتصل
+                                    </span>
+                                ` : `
+                                    <span class="inline-flex items-center gap-1.5 text-xs font-black text-red-400 mt-1">
+                                        <span class="w-2 h-2 rounded-full bg-red-400"></span> اشتراك غير نشط / معطل
+                                    </span>
+                                `}
+                            </div>
+                        </div>
+
+                        <div class="flex gap-2.5 pt-4 border-t border-white/5">
+                            <button onclick="inviteBot('${inviteUrl}')" class="flex-1 py-3 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white font-black rounded-xl text-xs border border-white/10 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95">
+                                <i data-lucide="external-link" class="w-4 h-4"></i>
+                                دعوة البوت
+                            </button>
+                            ${isActive ? `
+                                <button onclick="openBotControlPanel('${b.name}', '${scriptData.image || 'https://i.ibb.co/j97cvnZt/Bot.png'}')" class="flex-1 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:opacity-90 text-white font-black rounded-xl text-xs shadow-lg shadow-blue-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95">
+                                    <i data-lucide="sliders" class="w-4 h-4"></i>
+                                    لوحة التحكم
+                                </button>
+                            ` : `
+                                <button onclick="showNotification('⚠️ هذا الاشتراك معطل حالياً. يرجى تجديده أو تفعيله للوصول للوحة التحكم.', 'error')" class="flex-1 py-3 bg-white/5 text-slate-500 font-black rounded-xl text-xs border border-white/5 flex items-center justify-center gap-2 cursor-not-allowed">
+                                    <i data-lucide="lock" class="w-4 h-4"></i>
+                                    معطل
+                                </button>
+                            `}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            lucide.createIcons();
+        }
+
+        function loadDashboardServers() {
+            renderActiveBotsSection();
+        }
+
+        function switchDashTab(tab) {
+            activeDashTab = tab;
+            document.querySelectorAll('.dash-cp-tab').forEach(btn => {
+                const isCurrent = btn.dataset.tab === tab || btn.getAttribute('data-tab') === tab;
+                btn.classList.toggle('active', isCurrent);
+            });
+            document.querySelectorAll('.dash-section-panel').forEach(panel => {
+                const isCurrent = panel.dataset.panel === tab || panel.getAttribute('data-panel') === tab;
+                panel.classList.toggle('active', isCurrent);
+                if (isCurrent) panel.classList.remove('hidden');
+                else panel.classList.add('hidden');
+            });
+            if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
+        }
+
+        async function openBotControlPanel(botName, botAvatar) {
+            currentActiveBot = botName || 'Broadcast-Sub';
+            dashManagerList = [];
+            dashAllowedChannels = [];
+            dashLogChannel = [];
+            allGuildMembers = [];
+            allGuildChannels = [];
+
+            // Update UI header
+            const titleEl = document.getElementById('dcp-server-name');
+            if (titleEl) titleEl.innerText = currentActiveBot;
+            const iconEl = document.getElementById('dcp-server-icon');
+            if (iconEl) iconEl.src = botAvatar || 'https://i.ibb.co/j97cvnZt/Bot.png';
+
+            // Switch to panel view
+            const serverList = document.getElementById('dash-server-list');
+            const controlPanel = document.getElementById('dash-control-panel');
+            if (serverList) serverList.classList.add('hidden');
+            if (controlPanel) controlPanel.classList.remove('hidden');
+
+            switchDashTab('general');
+
+            // Reset pickers state
+            ['member-picker-list', 'channel-picker-list', 'logchan-picker-list'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.innerHTML = '<p class="text-xs text-slate-500 text-center py-4 font-bold">يرجى الاختيار أو البحث...</p>';
+            });
+
+            // Load bot configuration from DB
+            try {
+                const cfgRes = await callApi('/api/admin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'GET_BOT_CONFIG', bot_name: currentActiveBot })
+                });
+
+                if (cfgRes && cfgRes.ok) {
+                    const d = await cfgRes.json();
+                    if (d.config) fillBotConfigForm(d.config);
+                }
+            } catch (err) {
+                console.warn('Could not fetch bot config from API:', err);
+            }
+
+            renderMemberPicker('');
+            renderChannelPicker('allowed', '');
+            renderChannelPicker('log', '');
+            if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
+        }
+
+        function fillBotConfigForm(cfg) {
+            if (!cfg) return;
+            const p = document.getElementById('cfg-prefix');
+            if (p) p.value = cfg.prefix || '-';
+
+            const typeDisp = document.getElementById('cfg-status-type-display');
+            if (typeDisp) typeDisp.innerText = (cfg.status_type || 'STREAMING') + ' 🔴';
+
+            const nameDisp = document.getElementById('cfg-status-name-display');
+            if (nameDisp) nameDisp.innerText = cfg.status_name || 'Made by ! S A U D';
+
+            dashManagerList = (cfg.manager_ids || '').split(',').map(s => s.trim()).filter(Boolean);
+            dashAllowedChannels = (cfg.allowed_channel_id || '').split(',').map(s => s.trim()).filter(Boolean);
+            dashLogChannel = (cfg.log_channel_id || '').split(',').map(s => s.trim()).filter(Boolean);
+            renderManagerTags();
+            renderChannelTags();
+            renderLogTags();
+        }
+
+        /* ============ MEMBER PICKER ============ */
+        function renderManagerTags() {
+            const wrap = document.getElementById('manager-tags');
+            if (!wrap) return;
+            if (dashManagerList.length === 0) {
+                wrap.innerHTML = '<p class="text-xs text-slate-600 font-bold py-2">لا يوجد مسؤولون بعد</p>';
+                return;
+            }
+            wrap.innerHTML = dashManagerList.map((id, i) => {
+                const member = allGuildMembers.find(m => m.id === id);
+                const label = member ? member.display_name : id;
+                const avatar = member ? `<img src="${member.avatar}" class="w-4 h-4 rounded-full object-cover">` : `<i data-lucide="user" class="w-3 h-3"></i>`;
+                return `<span class="tag-chip">${avatar} ${label}<button onclick="removeManager(${i})" title="إزالة">×</button></span>`;
+            }).join('');
+            lucide.createIcons();
+            // Refresh picker to reflect selection state
+            renderMemberPicker(document.getElementById('manager-search')?.value || '');
+        }
+
+        function removeManager(i) { dashManagerList.splice(i, 1); renderManagerTags(); }
+
+        function renderMemberPicker(query) {
+            const list = document.getElementById('member-picker-list');
+            if (!list) return;
+            const q = query.toLowerCase();
+            const filtered = allGuildMembers.filter(m =>
+                m.display_name.toLowerCase().includes(q) || m.username.toLowerCase().includes(q) || m.id.includes(q)
+            );
+            if (filtered.length === 0) {
+                list.innerHTML = '<p class="text-xs text-slate-500 text-center py-4 font-bold">لا توجد نتائج</p>';
+                return;
+            }
+            list.innerHTML = filtered.map(m => {
+                const selected = dashManagerList.includes(m.id);
+                return `
+                    <button onclick="toggleManager('${m.id}')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all text-right ${selected ? 'bg-blue-600/15 border border-blue-500/25' : 'hover:bg-white/5 border border-transparent'}">
+                        <img src="${m.avatar}" class="w-8 h-8 rounded-full object-cover flex-shrink-0" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+                        <div class="flex-1 min-w-0 text-right">
+                            <p class="text-xs font-black text-white truncate">${m.display_name}</p>
+                            <p class="text-[10px] text-slate-500 font-bold">${m.username}</p>
+                        </div>
+                        ${selected ? '<i data-lucide="check" class="w-3.5 h-3.5 text-blue-400 flex-shrink-0"></i>' : ''}
+                    </button>`;
+            }).join('');
+            lucide.createIcons();
+        }
+
+        function toggleManager(memberId) {
+            if (dashManagerList.includes(memberId)) {
+                dashManagerList = dashManagerList.filter(id => id !== memberId);
+            } else {
+                dashManagerList.push(memberId);
+            }
+            renderManagerTags();
+        }
+
+        function filterMemberPicker() {
+            renderMemberPicker(document.getElementById('manager-search')?.value || '');
+        }
+
+        /* ============ CHANNEL PICKER ============ */
+        function renderChannelTags() {
+            const wrap = document.getElementById('channel-tags');
+            if (!wrap) return;
+            if (dashAllowedChannels.length === 0) {
+                wrap.innerHTML = '<p class="text-xs text-slate-600 font-bold py-2">جميع القنوات مسموحة</p>';
+                return;
+            }
+            wrap.innerHTML = dashAllowedChannels.map((id, i) => {
+                const ch = allGuildChannels.find(c => c.id === id);
+                const label = ch ? `# ${ch.name}` : id;
+                return `<span class="tag-chip"><i data-lucide="hash" class="w-3 h-3"></i> ${label}<button onclick="removeChannel(${i})" title="إزالة">×</button></span>`;
+            }).join('');
+            lucide.createIcons();
+            renderChannelPicker('allowed', document.getElementById('channel-search')?.value || '');
+        }
+
+        function removeChannel(i) { dashAllowedChannels.splice(i, 1); renderChannelTags(); }
+
+        function renderLogTags() {
+            const wrap = document.getElementById('logchan-tags');
+            if (!wrap) return;
+            if (dashLogChannel.length === 0) {
+                wrap.innerHTML = '<p class="text-xs text-slate-600 font-bold py-2">لم يتم تحديد قناة</p>';
+                return;
+            }
+            wrap.innerHTML = dashLogChannel.map((id, i) => {
+                const ch = allGuildChannels.find(c => c.id === id);
+                const label = ch ? `# ${ch.name}` : id;
+                return `<span class="tag-chip"><i data-lucide="hash" class="w-3 h-3"></i> ${label}<button onclick="removeLog(${i})" title="إزالة">×</button></span>`;
+            }).join('');
+            lucide.createIcons();
+            renderChannelPicker('log', document.getElementById('logchan-search')?.value || '');
+        }
+        function removeLog(i) { dashLogChannel.splice(i, 1); renderLogTags(); }
+
+        function renderChannelPicker(type, query) {
+            const listId = type === 'allowed' ? 'channel-picker-list' : 'logchan-picker-list';
+            const list = document.getElementById(listId);
+            if (!list) return;
+            const q = (query || '').toLowerCase();
+            const filtered = allGuildChannels.filter(c => c.name.toLowerCase().includes(q));
+            if (filtered.length === 0) {
+                list.innerHTML = '<p class="text-xs text-slate-500 text-center py-4 font-bold">لا توجد قنوات</p>';
+                return;
+            }
+            const currentList = type === 'allowed' ? dashAllowedChannels : dashLogChannel;
+            list.innerHTML = filtered.map(c => {
+                const selected = currentList.includes(c.id);
+                return `
+                    <button onclick="toggleChannel('${c.id}', '${type}')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all text-right ${selected ? 'bg-blue-600/15 border border-blue-500/25' : 'hover:bg-white/5 border border-transparent'}">
+                        <span class="text-slate-400 text-sm font-black flex-shrink-0">#</span>
+                        <span class="flex-1 text-xs font-black text-white truncate text-right">${c.name}</span>
+                        ${selected ? '<i data-lucide="check" class="w-3.5 h-3.5 text-blue-400 flex-shrink-0"></i>' : ''}
+                    </button>`;
+            }).join('');
+            lucide.createIcons();
+        }
+
+        function toggleChannel(channelId, type) {
+            if (type === 'allowed') {
+                if (dashAllowedChannels.includes(channelId)) {
+                    dashAllowedChannels = dashAllowedChannels.filter(id => id !== channelId);
+                } else {
+                    dashAllowedChannels.push(channelId);
+                }
+                renderChannelTags();
+            } else {
+                // Log channel: single selection
+                if (dashLogChannel.includes(channelId)) {
+                    dashLogChannel = [];
+                } else {
+                    dashLogChannel = [channelId];
+                }
+                renderLogTags();
+            }
+        }
+
+        function filterChannelPicker(type) {
+            const inputId = type === 'allowed' ? 'channel-search' : 'logchan-search';
+            renderChannelPicker(type, document.getElementById(inputId)?.value || '');
+        }
+
+        /* ============ SAVE CONFIG ============ */
+        async function saveBotConfig() {
+            showNotification('جاري حفظ الإعدادات...', 'info');
+            const btn = document.getElementById('dcp-save-btn');
+            if (btn) { btn.disabled = true; btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin inline-block mr-1"></i> جاري الحفظ...'; lucide.createIcons(); }
+
+            const payload = {
+                action: 'UPDATE_BOT_CONFIG',
+                userId: localStorage.getItem('userId'),
+                bot_name: currentActiveBot,
+                prefix: document.getElementById('cfg-prefix').value,
+                status_type: document.getElementById('cfg-status-type').value,
+                status_name: document.getElementById('cfg-status-name').value,
+                status_url: document.getElementById('cfg-status-url').value,
+                manager_ids: dashManagerList.join(','),
+                allowed_channel_id: dashAllowedChannels.join(','),
+                log_channel_id: dashLogChannel.join(',')
+            };
+
+            try {
+                const response = await callApi('/api/admin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (response.ok) {
+                    showNotification('✅ تم حفظ الإعدادات! ستُطبق على البوت خلال دقيقة.', 'success');
+                } else {
+                    showNotification('حدث خطأ في الحفظ', 'error');
+                }
+            } catch (err) {
+                showNotification('فشل الاتصال بالخادم', 'error');
+            }
+            if (btn) { btn.disabled = false; btn.innerHTML = '<i data-lucide="save" class="w-4 h-4"></i> حفظ وتطبيق التغييرات'; lucide.createIcons(); }
+        }
+
+
+
+        async function loadDashboardBots() {
+            const grid = document.getElementById('dash-bots-grid');
+            if (!grid) return;
+            grid.innerHTML = '<div class="col-span-full p-16 text-center animate-pulse text-slate-400 font-bold">جاري تحميل بوتاتك...</div>';
+            const userId = localStorage.getItem('userId');
+            try {
+                const response = await callApi('/api/admin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'LIST_ALL', userId })
+                });
+                const data = response.ok ? await response.json() : { licenses: [] };
+                const myBots = (data.licenses || []).filter(l => l.discord_id === userId && l.status === 'ACTIVE');
+
+                if (myBots.length === 0) {
+                    grid.innerHTML = `
+                        <div class="col-span-full flex flex-col items-center gap-6 py-24 text-center">
+                            <div class="w-24 h-24 rounded-full bg-slate-800 border border-white/5 flex items-center justify-center">
+                                <i data-lucide="bot-off" class="w-10 h-10 text-slate-600"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-black text-white mb-2">لا تمتلك أي بوتات نشطة</h3>
+                                <p class="text-slate-400 font-bold max-w-xs">اشترك في أحد بوتاتنا من المتجر للبدء</p>
+                            </div>
+                            <button onclick="switchTab('scripts')" class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-2xl transition-all shadow-lg shadow-blue-600/30">
+                                تصفح المتجر
+                            </button>
+                        </div>
+                    `;
+                    lucide.createIcons();
+                    return;
+                }
+
+                grid.innerHTML = '';
+                myBots.forEach(bot => {
+                    const scriptData = CONFIG.scripts.find(s => s.name === bot.name) || {};
+                    const card = document.createElement('div');
+                    card.className = 'dash-bot-card p-6 flex flex-col gap-4';
+                    card.innerHTML = `
+                        <div class="flex items-center gap-4">
+                            <div class="w-16 h-16 rounded-2xl overflow-hidden border border-white/10 bg-slate-800 flex-shrink-0 shadow-lg">
+                                <img src="${scriptData.image || 'https://i.ibb.co/j97cvnZt/Bot.png'}" class="w-full h-full object-cover" onerror="this.src='https://i.ibb.co/j97cvnZt/Bot.png'">
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h3 class="text-lg font-black text-white truncate">${bot.name}</h3>
+                                <span class="inline-flex items-center gap-1.5 text-[11px] font-black text-emerald-400">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> نشط
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 mt-auto pt-2 border-t border-white/5">
+                            <button onclick="openBotControlPanel('${bot.name}', '${bot.id}')" 
+                                class="flex-1 py-2.5 bg-blue-600/10 hover:bg-blue-600 text-blue-400 hover:text-white font-black rounded-xl transition-all text-xs flex items-center justify-center gap-2 border border-blue-500/20 group">
+                                <i data-lucide="sliders" class="w-3.5 h-3.5"></i> لوحة التحكم
+                            </button>
+                            <a href="${scriptData.downloadUrl || '#'}" target="_blank"
+                                class="py-2.5 px-3 bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white font-black rounded-xl transition-all text-xs border border-white/10">
+                                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                            </a>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+                lucide.createIcons();
+            } catch (err) {
+                console.error('loadDashboardBots error:', err);
+                grid.innerHTML = '<div class="col-span-full p-16 text-center text-red-400 font-bold">حدث خطأ في التحميل</div>';
+            }
+        }
+
+
+
+        function openIPModal(tokenId, currentIP) {
+            document.getElementById('edit-token-id').value = tokenId;
+            document.getElementById('new-ip-input').value = currentIP;
+            const modal = document.getElementById('ip-modal');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modal.querySelector('.glass').classList.remove('scale-95');
+            modal.querySelector('.glass').classList.add('scale-100');
+            document.body.style.overflow = 'hidden';
+            lucide.createIcons();
+        }
+
+        function closeIPModal() {
+            const modal = document.getElementById('ip-modal');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            modal.querySelector('.glass').classList.add('scale-95');
+            modal.querySelector('.glass').classList.remove('scale-100');
+            document.body.style.overflow = 'auto';
+        }
+
+        function openDiscordModal(tokenId, currentDiscordID) {
+            document.getElementById('edit-discord-token').value = tokenId;
+            document.getElementById('new-discord-input').value = currentDiscordID || '';
+            const modal = document.getElementById('discord-modal');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modal.querySelector('.glass').classList.remove('scale-95');
+            modal.querySelector('.glass').classList.add('scale-100');
+            document.body.style.overflow = 'hidden';
+            lucide.createIcons();
+        }
+
+        function closeDiscordModal() {
+            const modal = document.getElementById('discord-modal');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            modal.querySelector('.glass').classList.add('scale-95');
+            modal.querySelector('.glass').classList.remove('scale-100');
+            document.body.style.overflow = 'auto';
+        }
+
+        async function updateIP() {
+            const token = document.getElementById('edit-token-id').value;
+            const newIP = document.getElementById('new-ip-input').value;
+            if (!newIP) return showNotification("يرجى إدخال معرف سيرفر صحيح (Server ID).", "error");
+
+            const userId = localStorage.getItem('userId');
+            showNotification('جاري تحديث معرف السيرفر...', 'info');
+
+            try {
+                const response = await fetch('/api/admin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'UPDATE_IP',
+                        userId,
+                        token,
+                        newIP,
+                        webhookName: CONFIG.webhookConfig.name,
+                        webhookAvatar: CONFIG.webhookConfig.avatar
+                    })
+                });
+
+                if (response.ok) {
+                    showNotification(`تم تحديث معرف السيرفر بنجاح!`);
+                    closeIPModal();
+                    if (!document.getElementById('admin-view').classList.contains('hidden')) {
+                        fetchAllLicenses();
+                    } else {
+                        renderLicenses();
+                    }
+                } else {
+                    throw new Error('Update failed');
+                }
+            } catch (err) {
+                showNotification(`خطأ في التحديث: ${err.message}`, 'error');
+            }
+        }
+
+        async function updateDiscordID() {
+            const token = document.getElementById('edit-discord-token').value;
+            const newDiscordID = document.getElementById('new-discord-input').value;
+            const userId = localStorage.getItem('userId');
+
+            if (!newDiscordID) return showNotification('يرجى إدخال معرف صالح', 'error');
+
+            showNotification('جاري تحديث المعرف...', 'info');
+            try {
+                const response = await callApi('/api/admin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'UPDATE_DISCORD_ID', token, newDiscordID, userId })
+                });
+
+                if (response.ok) {
+                    showNotification('تم تحديث المعرف بنجاح', 'success');
+                    closeDiscordModal();
+                    fetchAllLicenses();
+                    return;
+                }
+            } catch (err) {
+                console.warn("API unavailable locally on Five Server.");
+            }
+
+            const item = allAdminLicenses.find(l => l.id === token);
+            if (item) {
+                item.discord_id = newDiscordID;
+                saveLocalSubscriptions();
+            }
+            showNotification('تم تحديث المعرف بنجاح', 'success');
+            closeDiscordModal();
+            renderAdminList(allAdminLicenses);
+        }
+
+        function loginWithDiscord() {
+            const scope = encodeURIComponent('identify guilds guilds.join');
+            const redirect = encodeURIComponent(CONFIG.redirectUri);
+            const authUrl = `https://discord.com/api/oauth2/authorize?client_id=${CONFIG.discordClientId}&redirect_uri=${redirect}&response_type=code&scope=${scope}`;
+            window.location.href = authUrl;
+        }
+
+        function simulateLogout() {
+            isLoggedIn = false;
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('username');
+            localStorage.removeItem('avatar');
+            localStorage.removeItem('userId');
+            localStorage.removeItem('isAdmin');
+            localStorage.removeItem('discord_access_token');
+            updateAuthState();
+            showNotification("تم تسجيل الخروج بنجاح.");
+            switchTab('home');
+        }
+        // Alias used by dashboard button
+        function logoutUser() { simulateLogout(); }
+
+        function updateAuthState() {
+            const authSection = document.getElementById('auth-section');
+            const adminTab = document.getElementById('tab-admin');
+            const mobileTabAdmin = document.getElementById('mobile-tab-admin');
+
+            if (isLoggedIn) {
+                const user = localStorage.getItem('username');
+                const avatar = localStorage.getItem('avatar');
+                const userId = localStorage.getItem('userId');
+                const isAdmin = CONFIG.adminIds.includes(userId);
+
+                if (isAdmin && adminTab) {
+                    adminTab.classList.remove('hidden');
+                } else if (adminTab) {
+                    adminTab.classList.add('hidden');
+                }
+
+                if (isAdmin && mobileTabAdmin) {
+                    mobileTabAdmin.classList.remove('hidden');
+                } else if (mobileTabAdmin) {
+                    mobileTabAdmin.classList.add('hidden');
+                }
+
+                authSection.innerHTML = `
+                    <div class="flex items-center space-x-2 md:space-x-4 space-x-reverse glass px-3 md:px-5 py-2.5 rounded-2xl border border-white/10">
+                        <img src="${avatar}" class="w-6 h-6 md:w-8 md:h-8 rounded-lg">
+                        <div class="flex flex-col text-right">
+                            <span class="text-[10px] md:text-xs font-black text-white underline decoration-blue-500 underline-offset-4 hidden sm:block">${user}</span>
+                            <button onclick="simulateLogout()" class="text-[9px] text-slate-400 hover:text-red-500 transition-colors uppercase font-black tracking-widest text-center sm:text-right">خروج</button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                if (adminTab) adminTab.classList.add('hidden');
+                if (mobileTabAdmin) mobileTabAdmin.classList.add('hidden');
+                authSection.innerHTML = `
+                    <button onclick="loginWithDiscord()" class="flex items-center space-x-2 space-x-reverse bg-blue-600 hover:bg-blue-700 text-white px-4 md:px-6 py-2.5 rounded-2xl transition-all duration-300 font-black border border-blue-400/30 text-[10px] md:text-xs shadow-lg shadow-blue-600/20 active:scale-95">
+                        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.078.078 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.419-2.157 2.419zm7.974 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.946-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.419-2.157 2.419z"/></svg>
+                        <span>Login</span>
+                    </button>
+                `;
+            }
+            lucide.createIcons();
+        }
+        function renderAdminList(licenses) {
+            const adminList = document.getElementById('admin-licenses-list');
+            if (!adminList) return;
+            adminList.innerHTML = '';
+
+            if (licenses.length === 0) {
+                adminList.innerHTML = '<div class="p-20 text-center opacity-50"><p class="text-xl font-bold text-slate-400 italic">لا توجد اشتراكات مطابقة للبحث</p></div>';
+                return;
+            }
+
+            licenses.forEach(license => {
+                const row = document.createElement('div');
+                const isActive = license.status === 'ACTIVE' || !license.status;
+                row.className = "grid grid-cols-4 items-center px-8 py-6 hover:bg-white/5 transition-all text-sm font-bold text-slate-300 gap-4";
+                row.innerHTML = `
+                    <div class="text-white font-black italic text-lg capitalize">${license.name}</div>
+                    <div class="text-center font-mono text-white text-base bg-white/10 py-2 rounded-xl shadow-inner border border-white/5">${license.discord_id || '---'}</div>
+                    <div class="flex justify-center">
+                        <span class="px-3 py-1 rounded-full ${isActive ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'} text-[10px] font-black">
+                            ${isActive ? 'نشط' : 'غير نشط'}
+                        </span>
+                    </div>
+                    <div class="flex justify-end gap-2 px-2">
+                        <div class="relative has-tooltip">
+                            <span class="custom-tooltip">${isActive ? 'تعطيل' : 'تفعيل'}</span>
+                            <button onclick="toggleLicenseStatus('${license.id}', '${license.status}')" class="p-2 ${isActive ? 'bg-red-500/10 text-red-500 hover:bg-red-500' : 'bg-green-500/10 text-green-500 hover:bg-green-500'} rounded-lg hover:text-white transition-all shadow-lg active:scale-90">
+                                <i data-lucide="${isActive ? 'slash' : 'play'}" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                        <div class="relative has-tooltip">
+                            <span class="custom-tooltip">تغيير المعرف</span>
+                            <button onclick="openDiscordModal('${license.id}', '${license.discord_id || ''}')" class="p-2 bg-indigo-500/10 text-indigo-400 rounded-lg hover:bg-indigo-600 hover:text-white transition-all shadow-lg active:scale-90">
+                                <i data-lucide="user" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                        <div class="relative has-tooltip">
+                            <span class="custom-tooltip">حذف الاشتراك</span>
+                            <button onclick="openDeleteModal('${license.id}')" class="p-2 bg-red-500/10 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-all shadow-lg active:scale-90">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                adminList.appendChild(row);
+            });
+            lucide.createIcons();
+        }
+
+        function filterAdminLicenses() {
+            const query = (document.getElementById('admin-search-input')?.value || "").toLowerCase();
+            const filtered = allAdminLicenses.filter(l =>
+                (l.name || "").toLowerCase().includes(query) ||
+                (l.id || "").toLowerCase().includes(query) ||
+                (l.discord_id || "").toLowerCase().includes(query) ||
+                (l.ip || "").toLowerCase().includes(query)
+            );
+            renderAdminList(filtered);
+        }
+
+        async function toggleLicenseStatus(token, currentStatus) {
+            const newStatus = (currentStatus === 'ACTIVE' || !currentStatus) ? 'INACTIVE' : 'ACTIVE';
+            const userId = localStorage.getItem('userId');
+
+            showNotification(newStatus === 'ACTIVE' ? 'جاري تفعيل الترخيص...' : 'جاري تعطيل الترخيص...', 'info');
+
+            try {
+                const response = await callApi('/api/admin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'UPDATE_STATUS',
+                        userId,
+                        token,
+                        status: newStatus
+                    })
+                });
+
+                if (response.ok) {
+                    showNotification(`تم التحديث بنجاح إلى: ${newStatus === 'ACTIVE' ? 'نشط' : 'غير نشط'}`);
+                    fetchAllLicenses();
+                    return;
+                }
+            } catch (err) {
+                console.warn("API unavailable locally on Five Server.");
+            }
+
+            const item = allAdminLicenses.find(l => l.id === token);
+            if (item) {
+                item.status = newStatus;
+                saveLocalSubscriptions();
+            }
+            showNotification(`تم التحديث بنجاح إلى: ${newStatus === 'ACTIVE' ? 'نشط' : 'غير نشط'}`);
+            renderAdminList(allAdminLicenses);
+        }
+
+        let pendingDeleteToken = null;
+        function openDeleteModal(token) {
+            pendingDeleteToken = token;
+            const modal = document.getElementById('delete-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                document.getElementById('confirm-delete-btn').onclick = () => confirmDeleteLicense(pendingDeleteToken);
+                lucide.createIcons();
+            }
+        }
+
+        function closeDeleteModal() {
+            const modal = document.getElementById('delete-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+            pendingDeleteToken = null;
+        }
+
+        async function confirmDeleteLicense(token) {
+            const adminId = localStorage.getItem('userId');
+            try {
+                const response = await callApi('/api/admin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'DELETE',
+                        userId: adminId,
+                        token,
+                        webhookName: CONFIG.webhookConfig.name,
+                        webhookAvatar: CONFIG.webhookConfig.avatar
+                    })
+                });
+
+                if (response.ok) {
+                    showNotification('تم حذف الاشتراك بنجاح', 'success');
+                    closeDeleteModal();
+                    fetchAllLicenses();
+                    return;
+                }
+            } catch (err) {
+                console.warn("API unavailable locally on Five Server.");
+            }
+
+            allAdminLicenses = allAdminLicenses.filter(l => l.id !== token);
+            saveLocalSubscriptions();
+            showNotification('تم حذف الاشتراك بنجاح', 'success');
+            closeDeleteModal();
+            renderAdminList(allAdminLicenses);
+        }
+
+        // Image Viewer Logic
+        function openImageViewer(url) {
+            const modal = document.getElementById('image-viewer-modal');
+            const img = document.getElementById('view-full-image');
+            if (modal && img) {
+                img.src = url;
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                document.body.style.overflow = 'hidden';
+                lucide.createIcons();
+            }
+        }
+
+        function closeImageViewer() {
+            const modal = document.getElementById('image-viewer-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                document.body.style.overflow = 'auto';
+            }
+        }
+    </script>
+</body>
+
+</html>
