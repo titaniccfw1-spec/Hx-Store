@@ -1857,7 +1857,7 @@
             renderActiveBotsSection();
         }
 
-        function switchDashTab(tab) {
+        window.switchDashTab = function(tab) {
             activeDashTab = tab;
             document.querySelectorAll('.dash-cp-tab').forEach(btn => {
                 const isCurrent = btn.dataset.tab === tab || btn.getAttribute('data-tab') === tab;
@@ -1872,55 +1872,9 @@
             if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
         }
 
-        async function openBotControlPanel(botName, botAvatar) {
-            currentActiveBot = botName || 'Broadcast-Sub';
-            dashManagerList = [];
-            dashAllowedChannels = [];
-            dashLogChannel = [];
-            allGuildMembers = [];
-            allGuildChannels = [];
-
-            // Update UI header
-            const titleEl = document.getElementById('dcp-server-name');
-            if (titleEl) titleEl.innerText = currentActiveBot;
-            const iconEl = document.getElementById('dcp-server-icon');
-            if (iconEl) iconEl.src = botAvatar || 'https://i.ibb.co/j97cvnZt/Bot.png';
-
-            // Switch to panel view
-            const serverList = document.getElementById('dash-server-list');
-            const controlPanel = document.getElementById('dash-control-panel');
-            if (serverList) serverList.classList.add('hidden');
-            if (controlPanel) controlPanel.classList.remove('hidden');
-
-            switchDashTab('general');
-
-            // Reset pickers state
-            ['member-picker-list', 'channel-picker-list', 'logchan-picker-list'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.innerHTML = '<p class="text-xs text-slate-500 text-center py-4 font-bold">يرجى الاختيار أو البحث...</p>';
-            });
-
-            // Load bot configuration from DB
-            try {
-                const cfgRes = await callApi('/api/admin', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'GET_BOT_CONFIG', bot_name: currentActiveBot })
-                });
-
-                if (cfgRes && cfgRes.ok) {
-                    const d = await cfgRes.json();
-                    if (d.config) fillBotConfigForm(d.config);
-                }
-            } catch (err) {
-                console.warn('Could not fetch bot config from API:', err);
-            }
-
-            renderMemberPicker('');
-            renderChannelPicker('allowed', '');
-            renderChannelPicker('log', '');
-            if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
-        }
+        // Remove duplicate function declaration - window.openBotControlPanel already defined at line 1708
+        // This duplicate was causing issues with onclick handlers
+        // async function openBotControlPanel(botName, botAvatar) { ... } REMOVED
 
         function fillBotConfigForm(cfg) {
             if (!cfg) return;
